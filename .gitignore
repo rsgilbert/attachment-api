@@ -1,0 +1,11 @@
+node_modules
+src/auth/keys/
+.env
+.elasticbeanstalk/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+db-backups/
+build/
+.DS_Store
