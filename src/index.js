@@ -5,6 +5,8 @@ import { body } from 'express-validator'
 import { logErrorHandler, handleError } from './routes/router-utils.js'
 import dbConfig from '../db.config.json.js'
 
+import attachmentRouter from './routes/attachment-router.js'
+import { HTTP_STATUS_CODES } from '@passioncloud/http/http/HttpResponse.js'
 
 
 const app = express();
@@ -17,6 +19,7 @@ app.use(cors({
     origin: [/localhost/] // only localhost for now
 }));
 app.use(express.json());
+app.use('/attachments', attachmentRouter)
 
 
 
