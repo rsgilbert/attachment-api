@@ -59,7 +59,5 @@ async function transaction(fn) {
     }
 }
 
-module.exports = {
-    query,
-    transaction
-};
+const db = { query, transaction }
+export default db 

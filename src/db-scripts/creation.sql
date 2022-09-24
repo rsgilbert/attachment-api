@@ -1,0 +1,5 @@
+CREATE TABLE users(user_id VARCHAR(50) PRIMARY KEY, email VARCHAR(50), hashed_password VARCHAR(200), confirmation_code VARCHAR(10), confirmed TINYINT);
+CREATE TABLE no_series(code VARCHAR(20) PRIMARY KEY, last_no VARCHAR(50));
+CREATE TABLE attachments (id VARCHAR(20) PRIMARY KEY, filename VARCHAR(100) NOT NULL, extension VARCHAR(20) NOT NULL, disk_filename VARCHAR(50) NOT NULL, mimetype VARCHAR(50) NOT NULL, size VARCHAR(10) NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);
+
+

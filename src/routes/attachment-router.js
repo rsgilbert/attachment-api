@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { query, body,  } from 'express-validator'
 import { expressValidatorHandler } from './router-utils.js'
+import { saveAttachmentDetails } from '../services/attachment-service.js'
 
 const attachment = multer({ dest: './attachments' })
 
@@ -17,7 +18,8 @@ attachmentRouter.post('/',
             if(!req.file?.filename) {
                 throw Error('Uploaded file not received')
             }
-            res.status(http.statusCodes.CREATED).json({filename: req.file.filename})
+            const attachment = await saveAttachmentDetails(req.file)
+            res.status(http.statusCodes.CREATED).json(attachment)
         } catch (e) { next(e) }
     })
 
