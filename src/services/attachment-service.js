@@ -2,6 +2,17 @@ import db from "../../db.js"
 import { nextNoFor } from "./no-series.js"
 import mime from 'mime-types'
 
+
+/**
+ * Returns a list of attachments records 
+ * @returns {Promise<import("../declarations/attachment").Attachment[]>}
+ */
+export const listAttachments = async () => {
+    const stmt = 'SELECT * FROM attachments'
+    let values = []
+    return db.query(conn => conn.query(stmt, values))
+
+}
 /**
  * Sales attachment details to database 
  * @param {Express.Multer.File} multerFile
@@ -24,6 +35,15 @@ export const saveAttachmentDetails = async multerFile => {
     return attachment
 }
 
+export const filenameFor = async (disk_filename) => {
+    const stmt = 'SELECT * FROM attachments WHERE disk_filename = ? LIMIT 1'
+    const values = [disk_filename]
+    const [attachment] = await db.query(conn => conn.query(stmt, values))
+    if(!attachment?.filename) {
+        throw Error('Failed to get filename for disk_filename ' + disk_filename)
+    }
+    return attachment.filename
+}
 class AttachmentDetails {
     _file;
     /**

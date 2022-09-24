@@ -3,9 +3,9 @@ import multer from 'multer'
 import http from '@passioncloud/http'
 import fs from 'fs'
 import path from 'path'
-import { query, body,  } from 'express-validator'
+import { query, body, } from 'express-validator'
 import { expressValidatorHandler } from './router-utils.js'
-import { saveAttachmentDetails } from '../services/attachment-service.js'
+import { filenameFor, listAttachments, saveAttachmentDetails } from '../services/attachment-service.js'
 
 const attachment = multer({ dest: './attachments' })
 
@@ -15,7 +15,7 @@ attachmentRouter.post('/',
     attachment.single('uploaded_file'),
     async function uploadFileToServer(req, res, next) {
         try {
-            if(!req.file?.filename) {
+            if (!req.file?.filename) {
                 throw Error('Uploaded file not received')
             }
             const attachment = await saveAttachmentDetails(req.file)
@@ -24,14 +24,25 @@ attachmentRouter.post('/',
     })
 
 attachmentRouter.get('/',
-    query('filename').isLength({ min: 1 }),
+    async function listAttachmentsRoute(req, res, next) {
+        try {
+            return res.json(await listAttachments())
+        }
+        catch(e) {
+            next(e)
+        }
+    })
+
+
+attachmentRouter.get('/download',
+    query('disk_filename').isLength({ min: 1 }),
     expressValidatorHandler,
     async function downloadFileFromServer(req, res, next) {
         try {
-            const filename = req.query.filename
-            confirmExists(filename)
-            res.set('Content-Disposition', `attachment; filename="${filename}"`)
-            await downloadFile(filename, res)
+            const disk_filename = req.query.disk_filename
+            confirmExists(disk_filename)
+            res.set('Content-Disposition', `attachment; filename="${await filenameFor(disk_filename)}"`)
+            await downloadFile(disk_filename, res)
             res.status(http.statusCodes.OK).end()
         } catch (e) {
             console.log(e)
